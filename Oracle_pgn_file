@@ -20,6 +20,12 @@ openai.api_key = ''
 # Set your Stockfish path here
 engine_path = ''
 
+# Set your input pgn file path here
+pgn_file_path = '.pgn'
+
+#Set your output csv file path here
+output_file_path = '.csv'
+
 total_input_tokens = 0
 total_output_tokens = 0
 total_cost = 0.0
@@ -679,9 +685,6 @@ def process_pgn_and_analyze(pgn_file_path, engine_path, model="gpt-3.5-turbo-ins
         print(f"Total output tokens: {total_output_tokens}")
 
 
-if __name__ == "__main__":
-    pgn_file_path = 'Lichess_last_10_blitz_1900_2100.pgn'
-    output_file_path = 'results2_Lichess_last_10_blitz_1900_2100.csv'
-    
+if __name__ == "__main__": 
     process_pgn_and_analyze(pgn_file_path, engine_path, output_file_path=output_file_path)
     logging.info(f"Results saved to {output_file_path}")
