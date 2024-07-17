@@ -4,7 +4,7 @@
 
 Oracle is the first chess engine that can play like a human, from amateur to super GM, at any time control. Oracle can almost instantly play like a 2800-rated player in classical or an 800-rated player in blitz.
 
-Oracle uses GPT-3.5 turbo instruct and Stockfish to deliver human-like chess moves. Users need an OpenAI API key [here](https://platform.openai.com/api-keys) and a version of Stockfish, which can be downloaded [here](https://stockfishchess.org/download/).
+Oracle uses GPT-3.5 turbo instruct and Stockfish to deliver human-like chess moves. Users need an [OpenAI API key](https://platform.openai.com/api-keys) and a version of Stockfish, which can be downloaded [here](https://stockfishchess.org/download/).
 
 ## Features
 
