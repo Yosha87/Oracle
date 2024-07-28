@@ -54,6 +54,7 @@ I am a FIDE Master and Woman International Master with no previous coding experi
 ## Oracle's name
 
 ![The Oracle from The Matrix](images/Oracle.jpg)
+
 I've decided to name my chess engine Oracle because just like the Oracle from The Matrix, her predictions feel magical even though they are just pure calculations performed by a program. For that reason, Oracle should be referred to as she/her. 
 
 ## Contributions and Future of Oracle
@@ -66,7 +67,7 @@ Following this, Oracle could be turned into a user-friendly executable file and 
 
 I have dedicated several hundred hours to this project and invested a significant amount of money. As a professional chess player and coach, my resources are limited. While I am happy to offer Oracle to the chess and scientific communities for free, any donation would be greatly appreciated.
 
-If you value my work and wish to support Oracle as well as me, please consider [making a donation.](https://www.paypal.com/donate/?hosted_button_id=6WTAEDBXAPTLC)
+If you value my work and wish to support Oracle and me, please consider [making a donation.](https://www.paypal.com/donate/?hosted_button_id=6WTAEDBXAPTLC)
 <p align="center">
   <a href="https://www.paypal.com/donate/?hosted_button_id=6WTAEDBXAPTLC">
     <img src="images/Paypal.png" alt="Donate via Paypal" />
