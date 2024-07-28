@@ -87,7 +87,6 @@ def clean_pgn(pgn):
     cleaned_lines = headers + [''] + [' '.join(moves)]
 
     result = '\n'.join(cleaned_lines)
-    print("Prompt:\n" + result)
     return result
 
 def get_legal_moves(board):
@@ -95,15 +94,12 @@ def get_legal_moves(board):
 
 def get_top_sequences(prompt, legal_moves, model, depth, retries=3, prob_threshold=0.001):
     sequences = []
-    request_count = 0  
-    start_time = time.time() 
 
     if depth == 0:
         return [("", 0)]
 
     def make_api_call(prompt, retries):
         global total_input_tokens, total_output_tokens, total_cost
-        nonlocal request_count
         attempt = 0
         while attempt < retries:
             try:
@@ -113,7 +109,6 @@ def get_top_sequences(prompt, legal_moves, model, depth, retries=3, prob_thresho
                     max_tokens=1,
                     logprobs=10
                 )
-                request_count += 1  
                 
                 input_tokens = response['usage']['prompt_tokens']
                 output_tokens = response['usage']['completion_tokens']
@@ -126,7 +121,6 @@ def get_top_sequences(prompt, legal_moves, model, depth, retries=3, prob_thresho
 
                 return response
             except Exception as e:
-                print(f"API call error: {e}")
                 attempt += 1
                 time.sleep(1)
         return None
@@ -166,14 +160,11 @@ def get_top_sequences(prompt, legal_moves, model, depth, retries=3, prob_thresho
                 if not is_valid_continuation(next_token, seq, legal_moves):
                     continue
 
-                print(f"Token: {next_token}, Combined Sequence: {combined_sequence}, Combined Logprob: {combined_logprob}, Combined Prob: {combined_prob}")
-
                 possible_moves = [move for move in legal_moves if move.startswith(combined_sequence)]
                 if len(possible_moves) == 1:
                     complete_sequence = possible_moves[0]
                     sequences.append((complete_sequence, combined_logprob))
                     legal_moves.remove(complete_sequence)
-                    print(f"Complete sequence: {complete_sequence}, Logprob: {combined_logprob}")
                 else:
                     if "O-O" in legal_moves and "O-O-O" in legal_moves:
                         if combined_sequence == "O-O":
@@ -213,29 +204,17 @@ def get_top_sequences(prompt, legal_moves, model, depth, retries=3, prob_thresho
 
     response = make_api_call(prompt, retries)
     if not response:
-        print(f"Total API requests made: {request_count}") 
-        end_time = time.time()  
-        print(f"Time taken: {end_time - start_time:.2f} seconds") 
         return []
 
     if not response.choices or 'logprobs' not in response.choices[0] or not response.choices[0]['logprobs']:
-        print(f"Total API requests made: {request_count}") 
-        end_time = time.time()  
-        print(f"Time taken: {end_time - start_time:.2f} seconds") 
         return []
 
     try:
         top_logprobs = response.choices[0]['logprobs'].get('top_logprobs')
         if not top_logprobs or len(top_logprobs) == 0:
-            print(f"Total API requests made: {request_count}") 
-            end_time = time.time()  
-            print(f"Time taken: {end_time - start_time:.2f} seconds") 
             return []
         top_tokens = top_logprobs[0]
     except IndexError:
-        print(f"Total API requests made: {request_count}") 
-        end_time = time.time()  
-        print(f"Time taken: {end_time - start_time:.2f} seconds") 
         return []
 
     initial_sequences = []
@@ -253,19 +232,14 @@ def get_top_sequences(prompt, legal_moves, model, depth, retries=3, prob_thresho
             continue
 
         initial_sequences.append((token, logprob, prompt + token))
-        print(f"First token: {token}, Logprob: {logprob}, Prob: {token_prob}")  
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = [executor.submit(expand_sequence, prompt, token, logprob, legal_moves.copy(), depth - 1, retries, prob_threshold) for token, logprob, _ in initial_sequences]
         concurrent.futures.wait(futures)
 
     if not sequences and prob_threshold > 0.01:
-        print(f"No sequences found. Lowering probability threshold from {prob_threshold} to {prob_threshold / 10}.")
         return get_top_sequences(prompt, legal_moves, model, depth, retries, prob_threshold / 10)
 
-    print(f"Total API requests made: {request_count}")  
-    end_time = time.time()  
-    print(f"Time taken: {end_time - start_time:.2f} seconds")  
     return sequences
 
 def clamp_score(score):
@@ -299,10 +273,8 @@ def analyze_moves(engine, board, n, time_limit=1.3, depth=20, threads=8, hash_si
                     eval_score = -eval_score
 
             evals.append((move, eval_score))
-            print(f"Analyzed move: {move}, Evaluation: {eval_score}")
         return evals
     except Exception as e:
-        print(f"Error analyzing moves: {e}")
         return []
     finally:
         engine.quit()
@@ -378,11 +350,8 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
     game = chess.pgn.read_game(io.StringIO(pgn_content))
     board = game.board()
 
-    rating, opponent_rating = (white_elo, black_elo) if board.turn == chess.WHITE else (black_elo, white_elo)
-    rating_adjusted = rating + (2 * (rating - opponent_rating))
-    opponent_rating_adjusted = opponent_rating + (2 * (opponent_rating - rating ))
-    rating_adjusted = max(500, rating_adjusted)
-    opponent_rating_adjusted = max(500, opponent_rating_adjusted)
+    rating = white_elo if board.turn == chess.WHITE else black_elo
+    high_rating= max(white_elo, black_elo)
 
     node = game
     while not node.is_end():
@@ -391,7 +360,6 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
         node = next_node
 
     legal_moves = get_legal_moves(board)
-    print(f"Legal moves: {legal_moves}")
 
     n = len(legal_moves)
 
@@ -402,7 +370,6 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
     top_sequences = future_top_sequences.result()
 
     all_evals_with_mate = future_analyze_moves.result()
-    print(all_evals_with_mate)
 
 
     all_evals = []
@@ -429,7 +396,6 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
 
     if best_move not in move_probabilities:
         move_probabilities[best_move] = prob_threshold * 100
-    print(f"Best move: {best_move} with probability {move_probabilities[best_move]}")
 
     total_probability = sum(move_probabilities.values())
     normalized_moves_initial = {move: (prob / total_probability) * 100 for move, prob in move_probabilities.items()}
@@ -457,7 +423,6 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
         best_move_importance = max(diff_high_1500, diff_high_rating)
     else:
         best_move_importance = max(diff_low_1500, diff_low_rating)
-    print ("best move importance" , best_move_importance)
     intercept_best_move = {
         'classical': (( (min(rating, 4100)) / 4100) + (20 * (best_move_importance / 100) ** 0.5)) * (min(rating, 4100)) / 4100,
         'rapid': (( min(rating, 3700)) / 3700 + (14 * (best_move_importance / 100)) ** 0.5) * (min(rating, 3700)) / 3700,
@@ -472,17 +437,8 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
     total_probability = sum(normalized_moves_initial.values())
     normalized_moves_best_adjusted = {move: (prob / total_probability) * 100 for move, prob in normalized_moves_initial.items()}
 
-    print("\nProbabilities best adjusted (normalized):")
-    for move, prob in normalized_moves_best_adjusted.items():
-        print(f"Move: {move}, Probability: {prob:.2f}%")
-
     win_percentages_1500 = {move: calculate_win_percentage(1500, eval_score) for move, eval_score in all_evals}
     win_percentages_rating = {move: calculate_win_percentage(rating, eval_score) for move, eval_score in all_evals}
-
-    print(f"\nHighest win percentage (1500): {highest_1500}")
-    print(f"Lowest win percentage (1500): {lowest_1500}")
-    print(f"Highest win percentage ({rating}): {highest_rating}")
-    print(f"Lowest win percentage ({rating}): {lowest_rating}")
 
     mate_in_dict = {}
     for move, eval_score in all_evals_with_mate:
@@ -511,9 +467,6 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
 
         percentage_loss = max(percentage_loss_1500, percentage_loss_rating)
         percentage_losses[move] = percentage_loss
-        
-
-        print(f"Move: {move}, Percentage Loss: {percentage_loss:.2f}")
 
         elo = white_elo if board.turn == chess.WHITE else black_elo
 
@@ -526,16 +479,10 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
         if percentage_loss > 0:
             normalized_moves_best_adjusted[move] /= (1 + (percentage_loss / ((-19 * elo) / 600 + 131.67)))
 
-    print("\nProbabilities after modification:")
-    for move, prob in normalized_moves_best_adjusted.items():
-        print(f"Move: {move}, Modified Probability: {prob:.2f}%")
 
     total_probability_modified = sum(normalized_moves_best_adjusted.values())
     normalized_moves_final = {move: (prob / total_probability_modified) * 100 for move, prob in normalized_moves_best_adjusted.items()}
 
-    print("\nProbabilities after final normalization:")
-    for move, prob in normalized_moves_final.items():
-        print(f"Move: {move}, Normalized Probability: {prob:.2f}%")
 
     sorted_moves = sorted(normalized_moves_final.items(), key=lambda x: x[1], reverse=True)
 
@@ -555,34 +502,9 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
     win_percentages = []
     current_win_percentage = 0
     for i, (move, raw_prob, new_norm_prob, eval_score) in enumerate(new_normalized_moves):
-        win_percentage_rating = calculate_win_percentage(rating_adjusted, eval_score)
-        win_percentage_opponent = calculate_win_percentage(opponent_rating_adjusted, eval_score)
-        
-        if rating >= opponent_rating:
-            win_percentage = max(win_percentage_rating, win_percentage_opponent)
-        else:
-            win_percentage = min(win_percentage_rating, win_percentage_opponent)
-
-        win_percentages.append((win_percentage, win_percentage_rating, win_percentage_opponent))    
-
-        print(f"Move {i}:")
-        print(f"  Eval Score: {eval_score}")
-        print(f"  Rating Win Percentage: {win_percentage_rating}")
-        print(f"  Opponent Rating Win Percentage: {win_percentage_opponent}")
-        print(f"  Chosen Win Percentage: {win_percentage}")
-        
+        win_percentage = calculate_win_percentage(high_rating, eval_score)
+        win_percentages.append(win_percentage)          
         current_win_percentage += win_percentage * new_norm_prob / 100
-
-
-    print("\nPosition:")
-    if final_board:
-        print(final_board)
-
-    print("\nAll Evaluations:")
-    for move, eval_score in all_evals:
-        print(f"Move: {move}, Evaluation: {eval_score}")
-
-    print(f"\nBest Move: {best_move}, Best Evaluation: {best_eval_value}")
 
 
     best_move_notation = get_best_move_notation(
@@ -604,7 +526,7 @@ def process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path, model
     table_data = []
     for i in rows_to_print:
         move, raw_prob, new_norm_prob, eval_score = new_normalized_moves[i]
-        win_percentage, win_percentage_rating, win_percentage_opponent = win_percentages[i]
+        win_percentage = win_percentages[i]
         percentage_loss = percentage_losses[move] if move in percentage_losses else 0
         is_best_move = (move == best_move)
         best_move_notation = get_best_move_notation(win_percentage, new_norm_prob, board.turn, current_win_percentage)
@@ -655,26 +577,19 @@ def parse_time_control(time_control):
 
 
 def determine_game_type(time_control):
-    print(f"Time control input: {time_control}")
     
     if time_control == '-':
-        print("Time control is unknown")
         return "Unknown"
     
     total_time = parse_time_control(time_control)
-    print(f"Parsed total time in seconds: {total_time}")
 
     if total_time < 180:
-        print("Game type determined: bullet")
         return "bullet"
     elif total_time < 600:
-        print("Game type determined: blitz")
         return "blitz"
     elif total_time < 3600:
-        print("Game type determined: rapid")
         return "rapid"
     else:
-        print("Game type determined: classical")
         return "classical"
 
 if __name__ == "__main__":
@@ -705,12 +620,7 @@ if __name__ == "__main__":
     def adjust_rating(rating, game_type):
         adjustments = {"bullet": 0, "blitz": 200, "rapid": 700, "classical": 1200}
         rating += adjustments.get(game_type, 0)
-        if game_type in adjustments:
-            print(f"Added {adjustments[game_type]} for {game_type}")
-        else:
-            print(f"Game type {game_type} did not match any known type.")
         rating = max(1000, min(4100, rating))
-        print(f"Final rating: {rating}")
         return rating
 
     white_elo = get_elo(white_elo, "Input White Elo: ")
@@ -718,6 +628,5 @@ if __name__ == "__main__":
 
     white_elo = adjust_rating(white_elo, game_type)
     black_elo = adjust_rating(black_elo, game_type)
-    print(f"Game type: {game_type}")
   
     process_pgn_and_rating(pgn_content, white_elo, black_elo, engine_path)
