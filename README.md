@@ -20,17 +20,17 @@ Oracle is the first chess engine that plays like a human, from amateur to super 
 
 ## Examples
 
-![Ding vs. Nepo, round 14 after 58...a3](images/Readme_DingvsNepo_chesscom.png)
+![Ding vs. Nepo, round 14 after 58...a3](Readme_DingvsNepo_chesscom.png)
 
 Position after 58...a3 in the last tie-break of the [2023 World Championship.](https://www.chess.com/events/2023-fide-world-chess-championship/18/Nepomniachtchi_Ian-Ding_Liren) Stockfish shows 0.00, but considering it's rapid, Oracle only gives white a 18.50% expected score. Nepo ended up blundering with 59. Qc7??, which was the likeliest move according to Oracle. 
 
-![Ding vs. Nepo, Input and Ouput](images/Readme_DingvsNepo.png)
+![Ding vs. Nepo, Input and Ouput](Readme_DingvsNepo.png)
 
-![Dubov vs. Nepo, position after 11... Nc6](images/Readme_DubovvsNepo_lichess.png)
+![Dubov vs. Nepo, position after 11... Nc6](Readme_DubovvsNepo_lichess.png)
 
 Position after 11...Nc6 in the infamous "Danse of the Knights" pre-arranged draw between [Daniil Dubov and Ian Nepomniachtchi](https://lichess.org/broadcast/2023-fide-world-blitz-championship--boards-1-30/round-11/yem1lgfo/ESRRgphO) at the 2023 World Blitz Championship. Despite it being an obviously bad move, Oracle predicts 12. Nb1 that was actually played by Nepo and gives it a high 72% likelihood.
 
-![Dubov vs. Nepo - Input and Ouput](images/Readme_DubovvsNepo.png)
+![Dubov vs. Nepo - Input and Ouput](Readme_DubovvsNepo.png)
 
 ## Requirements
 
@@ -53,7 +53,7 @@ I am a FIDE Master and Woman International Master with no previous coding experi
 
 ## Oracle's name
 
-![The Oracle from The Matrix](Oracle/images/Oracle.jpg)
+![The Oracle from The Matrix](Oracle.jpg)
 
 I've decided to name my chess engine Oracle because just like the Oracle from The Matrix, her predictions feel magical even though they are just pure calculations performed by a program. For that reason, Oracle should be referred to as she/her. 
 
