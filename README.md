@@ -53,7 +53,7 @@ I am a FIDE Master and Woman International Master with no previous coding experi
 
 ## Oracle's name
 
-![The Oracle from The Matrix](images/Oracle.jpg)
+![The Oracle from The Matrix](Oracle/images/Oracle.jpg)
 
 I've decided to name my chess engine Oracle because just like the Oracle from The Matrix, her predictions feel magical even though they are just pure calculations performed by a program. For that reason, Oracle should be referred to as she/her. 
 
