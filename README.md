@@ -70,7 +70,7 @@ I have dedicated several hundred hours to this project and invested a significan
 If you value my work and wish to support Oracle and me, please consider [making a donation.](https://www.paypal.com/donate/?hosted_button_id=6WTAEDBXAPTLC)
 <p align="center">
   <a href="https://www.paypal.com/donate/?hosted_button_id=6WTAEDBXAPTLC">
-    <img src="images/Paypal.png" alt="Donate via Paypal" />
+    <img src="Paypal.png" alt="Donate via Paypal" />
   </a>
 </p>
 
