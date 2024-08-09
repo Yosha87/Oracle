@@ -47,7 +47,7 @@ def clean_pgn(pgn):
             '[WhiteElo "?"]',
             '[BlackElo "?"]'
         ]
-        headers = default_header
+        headers = default_header 
 
     if headers and moves:
         cleaned_lines = headers + [''] + moves
