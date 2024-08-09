@@ -15,7 +15,7 @@ import sys
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Set your OpenAI API key here
-openai.api_key = ''
+openai.api_key = '' 
 
 # Set your Stockfish path here
 engine_path = ''
