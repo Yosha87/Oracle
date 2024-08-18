@@ -10,21 +10,20 @@ import time
 import logging
 import signal
 import sys
+from dotenv import dotenv_values
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Set your OpenAI API key here
-openai.api_key = '' 
+config = dotenv_values('.env')
 
-# Set your Stockfish path here
-engine_path = ''
+openai.api_key = config['OPENAI_API_KEY']
 
-# Set your input pgn file path here
-pgn_file_path = '.pgn'
+engine_path = config['ENGINE_PATH']
 
-#Set your output csv file path here
-output_file_path = '.csv'
+pgn_file_path = config['PGN_FILE_PATH']
+
+output_file_path = config['OUTPUT_FILE_PATH']
 
 total_input_tokens = 0
 total_output_tokens = 0
