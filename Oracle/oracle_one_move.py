@@ -8,12 +8,13 @@ import time
 from tabulate import tabulate
 import re
 import concurrent.futures
+from dotenv import dotenv_values
 
-# Set your OpenAI API key here
-openai.api_key = ''
+config = dotenv_values(".env")
 
-# Set your Stockfish path here
-engine_path = ''
+openai.api_key = config['OPENAI_API_KEY']
+
+engine_path = config['ENGINE_PATH']
 
 total_input_tokens = 0
 total_output_tokens = 0

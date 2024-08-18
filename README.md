@@ -13,24 +13,54 @@ Oracle is the first chess engine that plays like a human, from amateur to super 
   - **Oracle_one_move:** Takes a PGN game as input and predicts the likeliest next moves.
   - **Oracle_pgn_file:** Takes a PGN file with multiple games and predicts every move of every game, useful for creating data to test Oracle.
 
+## Installation
+
+Install [Python](https://www.python.org/downloads/)
+
+Download the repository
+Create a virtual environment:
+```bash
+python -m venv .venv
+```
+
+Activate the virtual environment:
+```bash
+.venv\Scripts\activate
+```
+
+Install the required packages:
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
-- **Oracle_one_move:** Set your openAI API key and the path to your Stockfish at the top of the file then run the file. Past the PGN up to the move you want to predict into the console, type END and press Enter
-- **Oracle_pgn_file:** Set your openAI API key, the path to your Stockfish, your input pgn file, and your output csv file, and then run the file. Oracle will write her predictions for every move of every game of the PGN into the csv file.
+Follow [the instructions](#requirements) to get your OpenAI API key and download Stockfish.
+
+You will find an .env file in the repository. Set your openAI API key and the path to your Stockfish in the .env file.
+Now if you want to use Oracle, you have two options:
+
+- **oracle_one_move:** Run the file. Past the PGN up to the move you want to predict into the console, type END and press Enter
+- **oracle_pgn_file:** Add to the .env file your input pgn file, and your output csv file, and then run the file. Oracle will write her predictions for every move of every game of the PGN into the csv file.
+
+You can run the file with the following command:
+```bash
+python Oracle/{file_name}.py
+```
 
 ## Examples
 
-![Ding vs. Nepo, round 14 after 58...a3](Readme_DingvsNepo_chesscom.png)
+![Ding vs. Nepo, round 14 after 58...a3](img/Readme_DingvsNepo_chesscom.png)
 
 Position after 58...a3 in the last tie-break of the [2023 World Championship.](https://www.chess.com/events/2023-fide-world-chess-championship/18/Nepomniachtchi_Ian-Ding_Liren) Stockfish shows 0.00, but considering it's rapid, Oracle only gives white a 18.50% expected score. Nepo ended up blundering with 59. Qc7??, which was the likeliest move according to Oracle. 
 
-![Ding vs. Nepo, Input and Ouput](Readme_DingvsNepo.png)
+![Ding vs. Nepo, Input and Ouput](img/Readme_DingvsNepo.png)
 
-![Dubov vs. Nepo, position after 11... Nc6](Readme_DubovvsNepo_lichess.png)
+![Dubov vs. Nepo, position after 11... Nc6](img/Readme_DubovvsNepo_lichess.png)
 
 Position after 11...Nc6 in the infamous "Danse of the Knights" pre-arranged draw between [Daniil Dubov and Ian Nepomniachtchi](https://lichess.org/broadcast/2023-fide-world-blitz-championship--boards-1-30/round-11/yem1lgfo/ESRRgphO) at the 2023 World Blitz Championship. Despite it being an obviously bad move, Oracle predicts 12. Nb1 that was actually played by Nepo and gives it a high 72% likelihood.
 
-![Dubov vs. Nepo - Input and Ouput](Readme_DubovvsNepo.png)
+![Dubov vs. Nepo - Input and Ouput](img/Readme_DubovvsNepo.png)
 
 ## Requirements
 
@@ -53,7 +83,7 @@ I am a FIDE Master and Woman International Master with no previous coding experi
 
 ## Oracle's name
 
-![The Oracle from The Matrix](Oracle.jpg)
+![The Oracle from The Matrix](img/Oracle.jpg)
 
 I've decided to name my chess engine Oracle because just like the Oracle from The Matrix, her predictions feel magical even though they are just pure calculations performed by a program. For that reason, Oracle should be referred to as she/her. 
 
@@ -70,7 +100,7 @@ I have dedicated several hundred hours to this project and invested a significan
 If you value my work and wish to support Oracle and me, please consider [making a donation.](https://www.paypal.com/donate/?hosted_button_id=6WTAEDBXAPTLC)
 <p align="center">
   <a href="https://www.paypal.com/donate/?hosted_button_id=6WTAEDBXAPTLC">
-    <img src="Paypal.png" alt="Donate via Paypal" />
+    <img src="img/Paypal.png" alt="Donate via Paypal" />
   </a>
 </p>
 
